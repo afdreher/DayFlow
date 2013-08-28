@@ -1,6 +1,10 @@
 #import <UIKit/UIKit.h>
 #import "DFDatePickerView.h"
 
+
+OBJC_EXPORT NSString * const SELECTED_DATE_KEYPATH;
+
+
 @class DFDatePickerViewController;
 @protocol DFDatePickerViewControllerDelegate
 
