@@ -152,17 +152,15 @@ static NSString * const DFDatePickerViewMonthHeaderIdentifier = @"monthHeader";
 }
 
 - (void) appendPastDates {
-
 	[self shiftDatesByComponents:((^{
 		NSDateComponents *dateComponents = [NSDateComponents new];
 		dateComponents.month = -6;
 		return dateComponents;
 	})())];
-
 }
 
 - (void) appendFutureDates {
-	
+
 	[self shiftDatesByComponents:((^{
 		NSDateComponents *dateComponents = [NSDateComponents new];
 		dateComponents.month = 6;
@@ -240,7 +238,10 @@ static NSString * const DFDatePickerViewMonthHeaderIdentifier = @"monthHeader";
 
 #endif
 	
-	NSInteger toSection = [self.calendar components:NSMonthCalendarUnit fromDate:[self dateForFirstDayInSection:0] toDate:fromSectionOfDate options:0].month;
+	NSInteger toSection = [self.calendar components:NSMonthCalendarUnit fromDate:[self dateForFirstDayInSection:0] toDate:fromSectionOfDate options:0].month % 12; // Mod is required for large shift
+  while (toSection < 0) { // This should only occur once, if at all
+    toSection += 12;
+  }
 	UICollectionViewLayoutAttributes *toAttrs = [cvLayout layoutAttributesForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:toSection]];
 	CGPoint toSectionOrigin = [self convertPoint:toAttrs.frame.origin fromView:cv];
 	
@@ -394,6 +395,43 @@ static NSString * const DFDatePickerViewMonthHeaderIdentifier = @"monthHeader";
 		components.month,
 		components.day
 	};
+}
+
+- (void)scrollToDate:(NSDate *)date
+      atScollPostion:(UICollectionViewScrollPosition)scrollPosition
+            animated:(BOOL)animated {
+  if ([date compare:[self dateFromPickerDate:self.fromDate]] == NSOrderedAscending) {
+    NSDateComponents *components = [NSDateComponents new];
+    components.month = [self.calendar components:NSMonthCalendarUnit
+                                        fromDate:[self dateFromPickerDate:self.fromDate]
+                                          toDate:date
+                                         options:0].month - 6;
+    [self shiftDatesByComponents:components];
+  } else if ([date compare:[self dateFromPickerDate:self.toDate]] == NSOrderedDescending) {
+    NSDateComponents *components = [NSDateComponents new];
+    components.month = [self.calendar components:NSMonthCalendarUnit
+                                        fromDate:[self dateFromPickerDate:self.toDate]
+                                          toDate:date
+                                         options:0].month + 6;
+    [self shiftDatesByComponents:components];
+  }
+  
+  NSLog(@"scrollToDate:%@ | fromDate:%@", [date description], [self dateFromPickerDate:self.fromDate]);
+  
+  NSInteger section = 0;
+  if ([date compare:[self dateFromPickerDate:self.fromDate]] == NSOrderedDescending) {
+    section = [self.calendar components:NSMonthCalendarUnit
+                               fromDate:[self dateFromPickerDate:self.fromDate]
+                                 toDate:date
+                                options:0].month;
+    NSInteger maxSection = [self numberOfSectionsInCollectionView:self.collectionView];
+    section = MIN(section, maxSection - 1);
+  }
+  
+  // Get the index position
+  [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:section]
+                              atScrollPosition:scrollPosition
+                                      animated:animated];
 }
 
 @end

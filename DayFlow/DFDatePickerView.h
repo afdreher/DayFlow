@@ -1,9 +1,12 @@
 #import <UIKit/UIKit.h>
 
 @interface DFDatePickerView : UIView
+@property (nonatomic, readwrite, strong) NSDate *selectedDate;
 
 - (instancetype) initWithCalendar:(NSCalendar *)calendar;
 
-@property (nonatomic, readwrite, strong) NSDate *selectedDate;
+- (void)scrollToDate:(NSDate *)date
+      atScollPostion:(UICollectionViewScrollPosition)scrollPosition
+            animated:(BOOL)animated;
 
 @end
