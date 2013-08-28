@@ -24,7 +24,11 @@
 
 - (void) viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
-	[self removeObserver:self forKeyPath:@"datePickerView.selectedDate" context:(void *)self];
+
+  id observationInfo = [self observationInfo];
+  if (observationInfo != nil) {
+    [self removeObserver:self forKeyPath:@"datePickerView.selectedDate" context:(void *)self];
+  }
 }
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
