@@ -434,4 +434,11 @@ static NSString * const DFDatePickerViewMonthHeaderIdentifier = @"monthHeader";
                                       animated:animated];
 }
 
+- (void)clearSelectionAnimated:(BOOL)animated {
+  NSArray *paths = [self.collectionView indexPathsForSelectedItems];
+  for (NSIndexPath *path in paths) {
+    [self.collectionView deselectItemAtIndexPath:path animated:animated];
+  }
+}
+
 @end

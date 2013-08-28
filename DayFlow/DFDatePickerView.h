@@ -9,4 +9,6 @@
       atScollPostion:(UICollectionViewScrollPosition)scrollPosition
             animated:(BOOL)animated;
 
+- (void)clearSelectionAnimated:(BOOL)animated;
+
 @end
