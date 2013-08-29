@@ -6,6 +6,7 @@
 + (id) fetchObjectForKey:(id)key withCreator:(id(^)(void))block;
 @property (nonatomic, readonly, strong) UIImageView *imageView;
 @property (nonatomic, readonly, strong) UIView *overlayView;
+@property (nonatomic) CALayer *cellLayer;
 @end
 
 @implementation DFDatePickerDayCell
@@ -13,6 +14,8 @@
 @synthesize overlayView = _overlayView;
 @synthesize textColor = _textColor;
 @synthesize cellColor = _cellColor;
+
+@synthesize cellLayer = _cellLayer;
 
 - (id) initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
@@ -47,10 +50,12 @@
 	[self setNeedsLayout];
 }
 
-- (void) setHasActivity:(BOOL)hasActivity
-{
+- (void) setHasActivity:(BOOL)hasActivity{
+  if (_hasActivity != hasActivity) {
+    [[[self class] imageCache] removeObjectForKey:[[self class] cacheKeyForPickerDate:self.date]];
     _hasActivity = hasActivity;
-    [self setNeedsLayout];
+  }
+  [self setNeedsLayout];
 }
 
 - (void) layoutSubviews {
@@ -71,52 +76,43 @@
 	//	We still have DFDatePickerMonthHeader take a NSDateFormatter formatted title
 	//	and draw it, but since that’s only one bitmap instead of 35-odd (7 weeks)
 	//	that’s mostly okay.
-	
-	self.imageView.alpha = self.enabled ? 1.0f : 0.25f;
-	
-	self.imageView.image = [[self class] fetchObjectForKey:[[self class] cacheKeyForPickerDate:self.date] withCreator:^{
-		
+  
+  // Disable animation to avoid flicker with CALayer
+  [CATransaction begin];
+  [CATransaction setDisableActions: YES];
+  self.cellLayer.bounds = self.bounds;
+  self.cellLayer.opacity = self.enabled ? 1.0f : 0.25f;
+  
+  if (self.hasActivity) {
+    self.cellLayer.borderWidth = 2.0;
+    self.cellLayer.borderColor = [UIColor redColor].CGColor;
+  } else {
+    self.cellLayer.borderWidth = 0.0;
+  }
+  [CATransaction commit];
+
+	self.imageView.image =
+      [[self class] fetchObjectForKey:[[self class] cacheKeyForPickerDate:self.date]
+                          withCreator:^{
 		UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, self.window.screen.scale);
 		CGContextRef context = UIGraphicsGetCurrentContext();
-		
-#if 0
-		
-		//	Generate a random color
-		//	https://gist.github.com/kylefox/1689973
-		CGFloat hue = ( arc4random() % 256 / 256.0 );  //  0.0 to 1.0
-		CGFloat saturation = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from white
-		CGFloat brightness = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from black
-		CGContextSetFillColorWithColor(context, [UIColor colorWithHue:hue saturation:saturation brightness:brightness alpha:1.0f].CGColor);
-		
-#else
-		
-		CGContextSetFillColorWithColor(context, self.cellColor.CGColor);
-		
-#endif
-
-		CGContextFillRect(context, self.bounds);
 		
 		UIFont *font = [UIFont boldSystemFontOfSize:20.0f];
 		CGRect textBounds = (CGRect){ 0.0f, 10.0f, 44.0f, 24.0f };
 		
 		CGContextSetFillColorWithColor(context, self.textColor.CGColor);
-		[[NSString stringWithFormat:@"%i", self.date.day] drawInRect:textBounds withFont:font lineBreakMode:NSLineBreakByCharWrapping alignment:NSTextAlignmentCenter];
-		
-        if (self.hasActivity){
-            CGFloat circleWidth = 5.0;
-            CGRect circleRect = (CGRectMake((self.bounds.size.width / 2) - (circleWidth / 2), self.bounds.size.height - (circleWidth * 2), circleWidth, circleWidth));
-            CGContextFillEllipseInRect(context, circleRect);
-        }
-        
+		[[NSString stringWithFormat:@"%i", self.date.day] drawInRect:textBounds
+                                                        withFont:font
+                                                   lineBreakMode:NSLineBreakByCharWrapping
+                                                       alignment:NSTextAlignmentCenter];
+    
 		UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
 		UIGraphicsEndImageContext();
 		
 		return image;
-		
 	}];
 	
 	self.overlayView.hidden = !(self.selected || self.highlighted);
-
 }
 
 - (UIView *) overlayView {
@@ -171,8 +167,18 @@
 - (void)setCellColor:(UIColor *)cellColor {
   if (_cellColor != cellColor) {
     _cellColor = cellColor;
-    [[[self class] imageCache] removeObjectForKey:[[self class] cacheKeyForPickerDate:self.date]];
+    self.cellLayer.backgroundColor = cellColor.CGColor;
   }
+}
+
+- (CALayer *)cellLayer {
+  if (!_cellLayer) {
+    _cellLayer = [CALayer layer];
+    _cellLayer.anchorPoint = CGPointZero;
+    _cellLayer.backgroundColor = self.cellColor.CGColor;
+    [self.layer insertSublayer:_cellLayer below:self.contentView.layer];
+  }
+  return _cellLayer;
 }
 
 @end

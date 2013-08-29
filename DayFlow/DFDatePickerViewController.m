@@ -73,7 +73,8 @@ NSString * const SELECTED_DATE_KEYPATH = @"datePickerView.selectedDate";
 		_datePickerView = [DFDatePickerView new];
 		_datePickerView.frame = self.view.bounds;
 		_datePickerView.autoresizingMask =
-    UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    _datePickerView.dataSource = self;
 	}
 	return _datePickerView;
 }
