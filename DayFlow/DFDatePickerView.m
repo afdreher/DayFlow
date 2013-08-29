@@ -78,7 +78,7 @@ static NSString * const DFDatePickerViewMonthHeaderIdentifier = @"monthHeader";
 	
 	[super layoutSubviews];
 	
-	self.collectionView.frame = self.bounds;
+	self.collectionView.frame = CGRectInset(self.bounds, 7.0, 0.0);
 	if (!self.collectionView.superview) {
 		[self addSubview:self.collectionView];
 	}
@@ -100,7 +100,7 @@ static NSString * const DFDatePickerViewMonthHeaderIdentifier = @"monthHeader";
 
 - (UICollectionView *) collectionView {
 	if (!_collectionView) {
-		_collectionView = [[DFDatePickerCollectionView alloc] initWithFrame:self.bounds collectionViewLayout:self.collectionViewLayout];
+		_collectionView = [[DFDatePickerCollectionView alloc] initWithFrame:CGRectInset(self.bounds, 7.0, 0.0) collectionViewLayout:self.collectionViewLayout];
 		_collectionView.backgroundColor = self.backgroundColor;
 		_collectionView.dataSource = self;
 		_collectionView.delegate = self;
@@ -125,8 +125,8 @@ static NSString * const DFDatePickerViewMonthHeaderIdentifier = @"monthHeader";
 	
 	if (!_collectionViewLayout) {
 		_collectionViewLayout = [UICollectionViewFlowLayout new];
-		_collectionViewLayout.headerReferenceSize = (CGSize){ 320, 64 };
-		_collectionViewLayout.itemSize = (CGSize){ 44, 44 };
+		_collectionViewLayout.headerReferenceSize = (CGSize){ 306, 64 };
+		_collectionViewLayout.itemSize = (CGSize){ 42, 42 };  // 44 x 44 would be 320
 		_collectionViewLayout.minimumLineSpacing = 2.0f;
 		_collectionViewLayout.minimumInteritemSpacing = 2.0f;
 	}
