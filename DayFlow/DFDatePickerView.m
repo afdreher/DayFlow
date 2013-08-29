@@ -92,10 +92,9 @@ static NSString * const DFDatePickerViewMonthHeaderIdentifier = @"monthHeader";
 }
 
 - (UICollectionView *) collectionView {
-
 	if (!_collectionView) {
 		_collectionView = [[DFDatePickerCollectionView alloc] initWithFrame:self.bounds collectionViewLayout:self.collectionViewLayout];
-		_collectionView.backgroundColor = [UIColor whiteColor];
+		_collectionView.backgroundColor = self.backgroundColor;
 		_collectionView.dataSource = self;
 		_collectionView.delegate = self;
 		_collectionView.showsVerticalScrollIndicator = NO;
@@ -492,6 +491,11 @@ static NSString * const DFDatePickerViewMonthHeaderIdentifier = @"monthHeader";
       [self.collectionView reloadSections:set];
     }
   }
+}
+
+- (void)setBackgroundColor:(UIColor *)backgroundColor {
+  [super setBackgroundColor:backgroundColor];
+  self.collectionView.backgroundColor = backgroundColor;
 }
 
 @end

@@ -9,6 +9,7 @@
 		_textLabel.textAlignment = NSTextAlignmentCenter;
 		_textLabel.font = [UIFont boldSystemFontOfSize:20.0f];
 		_textLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    _textLabel.backgroundColor = [UIColor clearColor];
 		[self addSubview:_textLabel];
 	}
 	return _textLabel;
