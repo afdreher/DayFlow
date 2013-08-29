@@ -11,11 +11,19 @@
 @implementation DFDatePickerDayCell
 @synthesize imageView = _imageView;
 @synthesize overlayView = _overlayView;
+@synthesize textColor = _textColor;
+@synthesize cellColor = _cellColor;
 
 - (id) initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if (self) {
 		self.backgroundColor = [UIColor whiteColor];
+    
+    self.textColor = [UIColor whiteColor];
+    self.cellColor = [UIColor colorWithRed:53.0f/256.0f
+                                     green:145.0f/256.0f
+                                      blue:195.0f/256.0f
+                                     alpha:1.0f];
 	}
 	return self;
 }
@@ -62,7 +70,7 @@
 	
 	self.imageView.image = [[self class] fetchObjectForKey:[[self class] cacheKeyForPickerDate:self.date] withCreator:^{
 		
-		UIGraphicsBeginImageContextWithOptions(self.bounds.size, YES, self.window.screen.scale);
+		UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, self.window.screen.scale);
 		CGContextRef context = UIGraphicsGetCurrentContext();
 		
 #if 0
@@ -76,7 +84,7 @@
 		
 #else
 		
-		CGContextSetFillColorWithColor(context, [UIColor colorWithRed:53.0f/256.0f green:145.0f/256.0f blue:195.0f/256.0f alpha:1.0f].CGColor);
+		CGContextSetFillColorWithColor(context, self.cellColor.CGColor);
 		
 #endif
 
@@ -85,7 +93,7 @@
 		UIFont *font = [UIFont boldSystemFontOfSize:20.0f];
 		CGRect textBounds = (CGRect){ 0.0f, 10.0f, 44.0f, 24.0f };
 		
-		CGContextSetFillColorWithColor(context, [UIColor whiteColor].CGColor);
+		CGContextSetFillColorWithColor(context, self.textColor.CGColor);
 		[[NSString stringWithFormat:@"%i", self.date.day] drawInRect:textBounds withFont:font lineBreakMode:NSLineBreakByCharWrapping alignment:NSTextAlignmentCenter];
 		
 		UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
@@ -139,6 +147,20 @@
 		[[self imageCache] setObject:answer forKey:key];
 	}
 	return answer;
+}
+
+- (void)setTextColor:(UIColor *)textColor {
+  if (_textColor != textColor) {
+    _textColor = textColor;
+    [[[self class] imageCache] removeObjectForKey:[[self class] cacheKeyForPickerDate:self.date]];
+  }
+}
+
+- (void)setCellColor:(UIColor *)cellColor {
+  if (_cellColor != cellColor) {
+    _cellColor = cellColor;
+    [[[self class] imageCache] removeObjectForKey:[[self class] cacheKeyForPickerDate:self.date]];
+  }
 }
 
 @end

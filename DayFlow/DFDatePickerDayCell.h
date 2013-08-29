@@ -3,7 +3,10 @@
 
 @interface DFDatePickerDayCell : UICollectionViewCell
 
-@property (nonatomic, readwrite, assign) DFDatePickerDate date;
+@property (nonatomic, assign) DFDatePickerDate date;
 @property (nonatomic, getter=isEnabled) BOOL enabled;
+
+@property (nonatomic) UIColor *textColor;
+@property (nonatomic) UIColor *cellColor;
 
 @end
