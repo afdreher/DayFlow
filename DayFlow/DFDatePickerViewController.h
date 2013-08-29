@@ -1,5 +1,6 @@
 #import <UIKit/UIKit.h>
 #import "DFDatePickerView.h"
+#import "DFSupplementaryViewsDatasource.h"
 
 
 OBJC_EXPORT NSString * const SELECTED_DATE_KEYPATH;
@@ -19,5 +20,6 @@ OBJC_EXPORT NSString * const SELECTED_DATE_KEYPATH;
 
 @property (nonatomic) UIFont *monthHeaderFont;
 @property (nonatomic) UIColor *monthHeaderColor;
+@property (nonatomic) NSObject<DFSupplementaryViewsDatasource> *supplementaryDatasource;
 
 @end

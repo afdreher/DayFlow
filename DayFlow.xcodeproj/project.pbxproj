@@ -32,6 +32,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E3CF67F617CFB340008E7E99 /* DFSupplementaryViewsDatasource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DFSupplementaryViewsDatasource.h; sourceTree = "<group>"; };
 		FF2A69CA172D2C07005A1A21 /* libDayFlow.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDayFlow.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF2A69CD172D2C07005A1A21 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		FF2A69D1172D2C07005A1A21 /* DayFlow-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DayFlow-Prefix.pch"; sourceTree = "<group>"; };
@@ -67,6 +68,7 @@
 		FF2A69C1172D2C06005A1A21 = {
 			isa = PBXGroup;
 			children = (
+				E3CF67F617CFB340008E7E99 /* DFSupplementaryViewsDatasource.h */,
 				FF2A69D2172D2C07005A1A21 /* DayFlow.h */,
 				FFB686A6172E8A660027ADF2 /* DFDatePickerViewController.h */,
 				FFB686A5172E8A660027ADF2 /* DFDatePickerViewController.m */,

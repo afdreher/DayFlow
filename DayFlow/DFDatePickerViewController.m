@@ -85,4 +85,12 @@ NSString * const SELECTED_DATE_KEYPATH = @"datePickerView.selectedDate";
   self.datePickerView.monthHeaderFont = monthHeaderFont;
 }
 
+- (NSObject<DFSupplementaryViewsDatasource> *)supplementaryDatasource {
+  return self.datePickerView.supplementaryDatasource;
+}
+
+- (void)setSupplementaryDatasource:(NSObject<DFSupplementaryViewsDatasource> *)supplementaryDatasource {
+  self.datePickerView.supplementaryDatasource = supplementaryDatasource;
+}
+
 @end

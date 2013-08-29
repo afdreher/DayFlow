@@ -25,6 +25,7 @@ static NSString * const DFDatePickerViewMonthHeaderIdentifier = @"monthHeader";
 @synthesize collectionViewLayout = _collectionViewLayout;
 @synthesize monthHeaderColor = _monthHeaderColor;
 @synthesize monthHeaderFont = _monthHeaderFont;
+@synthesize supplementaryDatasource = _supplementaryDatasource;
 
 - (instancetype) initWithCalendar:(NSCalendar *)calendar {
 	
@@ -370,7 +371,15 @@ static NSString * const DFDatePickerViewMonthHeaderIdentifier = @"monthHeader";
 		}];
 		
 		NSDate *formattedDate = [self dateForFirstDayInSection:indexPath.section];
-		monthHeader.textLabel.text = [dateFormatter stringFromDate:formattedDate];
+    NSString *text = nil;
+    if (self.supplementaryDatasource  &&
+        [self.supplementaryDatasource respondsToSelector:@selector(titleForMonthWithDate:)]) {
+      text = [self.supplementaryDatasource titleForMonthWithDate:formattedDate];
+    }
+    if (!text) { // If the supplementary datasource doesn't respond or it it chooses to pass, fall back.
+      text = [dateFormatter stringFromDate:formattedDate];
+    }
+		monthHeader.textLabel.text = text;
     monthHeader.textLabel.font = self.monthHeaderFont;
     monthHeader.textLabel.textColor = self.monthHeaderColor;
 		
