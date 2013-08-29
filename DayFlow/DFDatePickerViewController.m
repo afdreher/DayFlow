@@ -69,4 +69,20 @@ NSString * const SELECTED_DATE_KEYPATH = @"datePickerView.selectedDate";
 	return _datePickerView;
 }
 
+- (UIColor *)monthHeaderColor {
+  return self.datePickerView.monthHeaderColor;
+}
+
+- (void)setMonthHeaderColor:(UIColor *)monthHeaderColor {
+  self.datePickerView.monthHeaderColor = monthHeaderColor;
+}
+
+- (UIFont *)monthHeaderFont {
+  return self.datePickerView.monthHeaderFont;
+}
+
+- (void)setMonthHeaderFont:(UIFont *)monthHeaderFont {
+  self.datePickerView.monthHeaderFont = monthHeaderFont;
+}
+
 @end

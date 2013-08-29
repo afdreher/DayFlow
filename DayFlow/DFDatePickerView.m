@@ -23,6 +23,8 @@ static NSString * const DFDatePickerViewMonthHeaderIdentifier = @"monthHeader";
 @synthesize toDate = _toDate;
 @synthesize collectionView = _collectionView;
 @synthesize collectionViewLayout = _collectionViewLayout;
+@synthesize monthHeaderColor = _monthHeaderColor;
+@synthesize monthHeaderFont = _monthHeaderFont;
 
 - (instancetype) initWithCalendar:(NSCalendar *)calendar {
 	
@@ -45,6 +47,8 @@ static NSString * const DFDatePickerViewMonthHeaderIdentifier = @"monthHeader";
 			return components;
 		})()) toDate:now options:0]];
 		
+    self.monthHeaderFont = [UIFont boldSystemFontOfSize:20.0];
+    self.monthHeaderColor = [UIColor blackColor];
 	}
 	
 	return self;
@@ -367,6 +371,8 @@ static NSString * const DFDatePickerViewMonthHeaderIdentifier = @"monthHeader";
 		
 		NSDate *formattedDate = [self dateForFirstDayInSection:indexPath.section];
 		monthHeader.textLabel.text = [dateFormatter stringFromDate:formattedDate];
+    monthHeader.textLabel.font = self.monthHeaderFont;
+    monthHeader.textLabel.textColor = self.monthHeaderColor;
 		
 		return monthHeader;
 		
@@ -438,6 +444,43 @@ static NSString * const DFDatePickerViewMonthHeaderIdentifier = @"monthHeader";
   NSArray *paths = [self.collectionView indexPathsForSelectedItems];
   for (NSIndexPath *path in paths) {
     [self.collectionView deselectItemAtIndexPath:path animated:animated];
+  }
+}
+
+- (NSIndexSet *)visibleSections {
+  NSMutableIndexSet *set = nil;
+  NSArray *indexPaths = [self.collectionView indexPathsForVisibleItems];
+  if ([indexPaths count] > 0) {
+    set = [NSMutableIndexSet indexSet];
+    for (NSIndexPath *path in indexPaths) {
+      [set addIndex:path.section];
+    }
+  }
+  return set;
+}
+
+- (void)setMonthHeaderColor:(UIColor *)monthHeaderColor {
+  if (_monthHeaderColor != monthHeaderColor) {
+    _monthHeaderColor = monthHeaderColor;
+    
+    // I really don't want to reload the full section, but this seems to be the only way to handle
+    // reloading the headers. :(
+    NSIndexSet *set = [self visibleSections];
+    if (set) {
+      [self.collectionView reloadSections:set];
+    }
+  }
+}
+
+- (void)setMonthHeaderFont:(UIFont *)monthHeaderFont {
+  if (_monthHeaderFont != monthHeaderFont) {
+    _monthHeaderFont = monthHeaderFont;
+    
+    // As before, I really don't want to reload the full section, but this is about all I can find.
+    NSIndexSet *set = [self visibleSections];
+    if (set) {
+      [self.collectionView reloadSections:set];
+    }
   }
 }
 

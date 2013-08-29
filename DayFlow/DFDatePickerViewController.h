@@ -17,4 +17,7 @@ OBJC_EXPORT NSString * const SELECTED_DATE_KEYPATH;
 @property (nonatomic, readonly, strong) DFDatePickerView *datePickerView;
 @property (nonatomic, readwrite, weak) id<DFDatePickerViewControllerDelegate> delegate;
 
+@property (nonatomic) UIFont *monthHeaderFont;
+@property (nonatomic) UIColor *monthHeaderColor;
+
 @end

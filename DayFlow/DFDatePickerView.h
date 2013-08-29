@@ -1,7 +1,9 @@
 #import <UIKit/UIKit.h>
 
 @interface DFDatePickerView : UIView
-@property (nonatomic, readwrite, strong) NSDate *selectedDate;
+@property (nonatomic) NSDate *selectedDate;
+@property (nonatomic) UIColor *monthHeaderColor;
+@property (nonatomic) UIFont *monthHeaderFont;
 
 - (instancetype) initWithCalendar:(NSCalendar *)calendar;
 
