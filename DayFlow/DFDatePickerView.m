@@ -25,6 +25,13 @@ static NSString * const DFDatePickerViewMonthHeaderIdentifier = @"monthHeader";
 @synthesize collectionViewLayout = _collectionViewLayout;
 @synthesize monthHeaderColor = _monthHeaderColor;
 @synthesize monthHeaderFont = _monthHeaderFont;
+
+@synthesize textColor = _textColor;
+@synthesize cellBackgroundColor = _cellBackgroundColor;
+@synthesize activityColor = _activityColor;
+@synthesize cellBorderColor = _cellBorderColor;
+@synthesize cellBorderThickness = _cellBorderThickness;
+
 @synthesize supplementaryDatasource = _supplementaryDatasource;
 
 - (instancetype) initWithCalendar:(NSCalendar *)calendar {
@@ -321,8 +328,11 @@ static NSString * const DFDatePickerViewMonthHeaderIdentifier = @"monthHeader";
 	})()) toDate:firstDayInMonth options:0];
 	DFDatePickerDate cellPickerDate = [self pickerDateFromDate:cellDate];
 	
-  cell.cellBorderColor = [UIColor lightGrayColor];
-  cell.cellBorderThickness = @"Thin";
+  cell.textColor = self.textColor;
+  cell.cellColor = self.cellBackgroundColor;
+  cell.cellBorderColor = self.cellBorderColor;
+  cell.cellBorderThickness = self.cellBorderThickness;
+  cell.activityColor = self.activityColor;
   
 	cell.date = cellPickerDate;
 	cell.enabled = ((firstDayPickerDate.year == cellPickerDate.year) && (firstDayPickerDate.month == cellPickerDate.month));
@@ -494,6 +504,12 @@ static NSString * const DFDatePickerViewMonthHeaderIdentifier = @"monthHeader";
     if (set) {
       [self.collectionView reloadSections:set];
     }
+  }
+}
+
+- (void)setTextColor:(UIColor *)textColor {
+  if (_textColor != textColor) {
+    _textColor = textColor;
   }
 }
 

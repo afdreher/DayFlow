@@ -9,8 +9,16 @@
 
 @interface DFDatePickerView : UIView
 @property (nonatomic) NSDate *selectedDate;
+
 @property (nonatomic) UIColor *monthHeaderColor;
 @property (nonatomic) UIFont *monthHeaderFont;
+
+@property (nonatomic) UIColor *textColor;
+@property (nonatomic) UIColor *cellBackgroundColor;
+@property (nonatomic) UIColor *activityColor;
+@property (nonatomic) UIColor *cellBorderColor;
+@property (nonatomic) NSString *cellBorderThickness;
+
 @property (nonatomic) NSObject<DFSupplementaryViewsDatasource> *supplementaryDatasource;
 @property (nonatomic, weak) id <DFDatePickerViewDataSource> dataSource;
 

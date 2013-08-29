@@ -62,7 +62,6 @@
 
 - (void) setHasActivity:(BOOL)hasActivity{
   if (_hasActivity != hasActivity) {
-    [[[self class] imageCache] removeObjectForKey:[[self class] cacheKeyForPickerDate:self.date]];
     _hasActivity = hasActivity;
   }
   [self setNeedsLayout];
@@ -108,10 +107,11 @@
       self.cellLayer.borderWidth = 0.0;
     }
   }
+  self.imageView.alpha = self.cellLayer.opacity;
   [CATransaction commit];
 
 	self.imageView.image =
-      [[self class] fetchObjectForKey:[[self class] cacheKeyForPickerDate:self.date]
+      [[self class] fetchObjectForKey:[[self class] cacheKeyForPickerDate:self.date active:self.hasActivity]
                           withCreator:^{
 		UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, self.window.screen.scale);
 		CGContextRef context = UIGraphicsGetCurrentContext();
@@ -119,7 +119,11 @@
 		UIFont *font = [UIFont boldSystemFontOfSize:20.0f];
 		CGRect textBounds = (CGRect){ 0.0f, 10.0f, 44.0f, 24.0f };
 		
-		CGContextSetFillColorWithColor(context, self.textColor.CGColor);
+    if (self.hasActivity) {
+		  CGContextSetFillColorWithColor(context, self.activityColor.CGColor);
+    } else {
+      CGContextSetFillColorWithColor(context, self.textColor.CGColor);
+    }
 		[[NSString stringWithFormat:@"%i", self.date.day] drawInRect:textBounds
                                                         withFont:font
                                                    lineBreakMode:NSLineBreakByCharWrapping
@@ -167,6 +171,10 @@
 	return @(date.day);
 }
 
++ (id)cacheKeyForPickerDate:(DFDatePickerDate)date active:(BOOL)active {
+  return [NSString stringWithFormat:@"%d-%d", date.day, (active ? 0 : 1)];
+}
+
 + (id) fetchObjectForKey:(id)key withCreator:(id(^)(void))block {
 	id answer = [[self imageCache] objectForKey:key];
 	if (!answer) {
@@ -183,14 +191,14 @@
 }
 
 - (void)setTextColor:(UIColor *)textColor {
-  if (!_textColor || _textColor != textColor) {
+  if (_textColor != textColor) {
     _textColor = textColor;
-    [[[self class] imageCache] removeObjectForKey:[[self class] cacheKeyForPickerDate:self.date]];
+    [[[self class] imageCache] removeObjectForKey:[[self class] cacheKeyForPickerDate:self.date active:NO]];
   }
 }
 
 - (void)setCellColor:(UIColor *)cellColor {
-  if (!_cellColor || _cellColor != cellColor) {
+  if (_cellColor != cellColor) {
     _cellColor = cellColor;
     self.cellLayer.backgroundColor = cellColor.CGColor;
   }
@@ -199,6 +207,7 @@
 - (void)setActivityColor:(UIColor *)activityColor {
   if (!_activityColor || _activityColor != activityColor) {
     _activityColor = activityColor;
+    [[[self class] imageCache] removeObjectForKey:[[self class] cacheKeyForPickerDate:self.date active:YES]];
     [self setNeedsLayout];
   }
 }
@@ -214,7 +223,7 @@
 }
 
 - (void)setCellBorderColor:(UIColor *)cellBorderColor {
-  if (!_cellBorderColor || _cellBorderColor != cellBorderColor) {
+  if (_cellBorderColor != cellBorderColor) {
     _cellBorderColor = cellBorderColor;
     [self setNeedsLayout];
   }
