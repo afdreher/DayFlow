@@ -9,5 +9,8 @@
 
 @property (nonatomic) UIColor *textColor;
 @property (nonatomic) UIColor *cellColor;
+@property (nonatomic) UIColor *activityColor;
+@property (nonatomic) UIColor *cellBorderColor;
+@property (nonatomic) NSString *cellBorderThickness;
 
 @end

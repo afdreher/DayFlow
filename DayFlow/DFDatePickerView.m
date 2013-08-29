@@ -308,7 +308,8 @@ static NSString * const DFDatePickerViewMonthHeaderIdentifier = @"monthHeader";
 - (DFDatePickerDayCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
 	
 	DFDatePickerDayCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:DFDatePickerViewCellIdentifier forIndexPath:indexPath];
-	
+	cell.contentScaleFactor = self.contentScaleFactor;
+  
 	NSDate *firstDayInMonth = [self dateForFirstDayInSection:indexPath.section];
 	DFDatePickerDate firstDayPickerDate = [self pickerDateFromDate:firstDayInMonth];
 	NSUInteger weekday = [self.calendar components:NSWeekdayCalendarUnit fromDate:firstDayInMonth].weekday;
@@ -320,6 +321,9 @@ static NSString * const DFDatePickerViewMonthHeaderIdentifier = @"monthHeader";
 	})()) toDate:firstDayInMonth options:0];
 	DFDatePickerDate cellPickerDate = [self pickerDateFromDate:cellDate];
 	
+  cell.cellBorderColor = [UIColor lightGrayColor];
+  cell.cellBorderThickness = @"Thin";
+  
 	cell.date = cellPickerDate;
 	cell.enabled = ((firstDayPickerDate.year == cellPickerDate.year) && (firstDayPickerDate.month == cellPickerDate.month));
 	cell.selected = [self.selectedDate isEqualToDate:cellDate];
@@ -496,6 +500,11 @@ static NSString * const DFDatePickerViewMonthHeaderIdentifier = @"monthHeader";
 - (void)setBackgroundColor:(UIColor *)backgroundColor {
   [super setBackgroundColor:backgroundColor];
   self.collectionView.backgroundColor = backgroundColor;
+}
+
+- (void)setContentScaleFactor:(CGFloat)contentScaleFactor {
+  [super setContentScaleFactor:contentScaleFactor];
+  self.collectionView.contentScaleFactor = contentScaleFactor;
 }
 
 @end

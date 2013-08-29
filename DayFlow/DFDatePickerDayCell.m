@@ -7,6 +7,10 @@
 @property (nonatomic, readonly, strong) UIImageView *imageView;
 @property (nonatomic, readonly, strong) UIView *overlayView;
 @property (nonatomic) CALayer *cellLayer;
+
+// Although we store the NSString value, I don't want to compare too often.
+@property (nonatomic, assign) BOOL cellBorderThicknessUseThin;
+@property (nonatomic, assign) CGFloat cellBorderThicknessFloatValue;
 @end
 
 @implementation DFDatePickerDayCell
@@ -14,6 +18,11 @@
 @synthesize overlayView = _overlayView;
 @synthesize textColor = _textColor;
 @synthesize cellColor = _cellColor;
+@synthesize activityColor = _activityColor;
+@synthesize cellBorderColor = _cellBorderColor;
+@synthesize cellBorderThickness = _cellBorderThickness;
+@synthesize cellBorderThicknessUseThin = _cellBorderThicknessUseThin;
+@synthesize cellBorderThicknessFloatValue = _cellBorderThicknessFloatValue;
 
 @synthesize cellLayer = _cellLayer;
 
@@ -27,6 +36,7 @@
                                      green:145.0f/256.0f
                                       blue:195.0f/256.0f
                                      alpha:1.0f];
+    self.cellBorderColor = nil;
 	}
 	return self;
 }
@@ -85,9 +95,18 @@
   
   if (self.hasActivity) {
     self.cellLayer.borderWidth = 2.0;
-    self.cellLayer.borderColor = [UIColor redColor].CGColor;
+    self.cellLayer.borderColor = self.activityColor.CGColor;
   } else {
-    self.cellLayer.borderWidth = 0.0;
+    if (self.cellBorderColor) {
+      self.cellLayer.borderColor = self.cellBorderColor.CGColor;
+      if (self.cellBorderThicknessUseThin) {
+        self.cellLayer.borderWidth = 1.0 / self.contentScaleFactor;
+      } else {
+        self.cellLayer.borderWidth = self.cellBorderThicknessFloatValue;
+      }
+    } else {
+      self.cellLayer.borderWidth = 0.0;
+    }
   }
   [CATransaction commit];
 
@@ -157,17 +176,30 @@
 	return answer;
 }
 
+- (void)setContentScaleFactor:(CGFloat)contentScaleFactor {
+  [super setContentScaleFactor:contentScaleFactor];
+  self.cellLayer.contentsScale = contentScaleFactor; // Allow for retina
+  [self setNeedsLayout];
+}
+
 - (void)setTextColor:(UIColor *)textColor {
-  if (_textColor != textColor) {
+  if (!_textColor || _textColor != textColor) {
     _textColor = textColor;
     [[[self class] imageCache] removeObjectForKey:[[self class] cacheKeyForPickerDate:self.date]];
   }
 }
 
 - (void)setCellColor:(UIColor *)cellColor {
-  if (_cellColor != cellColor) {
+  if (!_cellColor || _cellColor != cellColor) {
     _cellColor = cellColor;
     self.cellLayer.backgroundColor = cellColor.CGColor;
+  }
+}
+
+- (void)setActivityColor:(UIColor *)activityColor {
+  if (!_activityColor || _activityColor != activityColor) {
+    _activityColor = activityColor;
+    [self setNeedsLayout];
   }
 }
 
@@ -179,6 +211,27 @@
     [self.layer insertSublayer:_cellLayer below:self.contentView.layer];
   }
   return _cellLayer;
+}
+
+- (void)setCellBorderColor:(UIColor *)cellBorderColor {
+  if (!_cellBorderColor || _cellBorderColor != cellBorderColor) {
+    _cellBorderColor = cellBorderColor;
+    [self setNeedsLayout];
+  }
+}
+
+- (void)setCellBorderThickness:(NSString *)cellBorderThickness {
+  if (!_cellBorderThickness ||
+      [_cellBorderThickness caseInsensitiveCompare:cellBorderThickness] != NSOrderedSame) {
+    _cellBorderThickness = cellBorderThickness;
+    if ([cellBorderThickness caseInsensitiveCompare:@"thin"] == NSOrderedSame) {
+      self.cellBorderThicknessUseThin = YES;
+    } else {
+      self.cellBorderThicknessUseThin = NO;
+      self.cellBorderThicknessFloatValue = [cellBorderThickness floatValue];
+    }
+    [self setNeedsLayout];
+  }
 }
 
 @end
