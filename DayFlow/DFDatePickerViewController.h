@@ -10,6 +10,7 @@ OBJC_EXPORT NSString * const SELECTED_DATE_KEYPATH;
 @protocol DFDatePickerViewControllerDelegate
 
 - (void) datePickerViewController:(DFDatePickerViewController *)controller didSelectDate:(NSDate *)date;
+- (BOOL) datePickerViewController:(DFDatePickerViewController *)controller shouldShowActivityOnDate:(NSDate *)date;
 
 @end
 
@@ -20,6 +21,6 @@ OBJC_EXPORT NSString * const SELECTED_DATE_KEYPATH;
 
 @property (nonatomic) UIFont *monthHeaderFont;
 @property (nonatomic) UIColor *monthHeaderColor;
-@property (nonatomic) NSObject<DFSupplementaryViewsDatasource> *supplementaryDatasource;
+@property (nonatomic, weak) NSObject<DFSupplementaryViewsDatasource> *supplementaryDatasource;
 
 @end

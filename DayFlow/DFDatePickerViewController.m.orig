@@ -6,7 +6,6 @@
 
 NSString * const SELECTED_DATE_KEYPATH = @"datePickerView.selectedDate";
 
-
 @interface DFDatePickerViewController () <DFDatePickerViewDataSource>
 @end
 
@@ -22,7 +21,7 @@ NSString * const SELECTED_DATE_KEYPATH = @"datePickerView.selectedDate";
 	[self.view addSubview:self.datePickerView];
 }
 
-- (void)viewDidAppear:(BOOL)animated {
+- (void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 	[self addObserver:self
          forKeyPath:SELECTED_DATE_KEYPATH
@@ -40,6 +39,10 @@ NSString * const SELECTED_DATE_KEYPATH = @"datePickerView.selectedDate";
 }
 
 
+- (BOOL) datePickerView:(DFDatePickerView *)datePickerView shouldShowActivityOnDate:(NSDate *)date {
+  return [self.delegate datePickerViewController:self shouldShowActivityOnDate:date];
+}
+  
 //
 //  KEY VALUE OBSERVING
 //
@@ -57,12 +60,6 @@ NSString * const SELECTED_DATE_KEYPATH = @"datePickerView.selectedDate";
 	}
 }
 
-- (BOOL) datePickerView:(DFDatePickerView *)datePickerView shouldShowActivityOnDate:(NSDate *)date
-{
-    return [self.delegate datePickerViewController:self shouldShowActivityOnDate:date];
-}
-
-
 
 //
 //  PROPERTY METHODS
@@ -73,7 +70,8 @@ NSString * const SELECTED_DATE_KEYPATH = @"datePickerView.selectedDate";
 		_datePickerView = [DFDatePickerView new];
 		_datePickerView.frame = self.view.bounds;
 		_datePickerView.autoresizingMask =
-    UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    _datePickerView.dataSource = self;
 	}
 	return _datePickerView;
 }
